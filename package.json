@@ -24,7 +24,7 @@
     "clean": "rm -rf dist",
     "prepublishOnly": "bun run clean && bun run build",
     "typecheck": "tsc --noEmit",
-    "postinstall": "node ./scripts/install-opencode-clauddy.js"
+    "postinstall": "bun ./scripts/install-opencode-clauddy.js || node ./scripts/install-opencode-clauddy.js"
   },
   "keywords": [
     "opencode",

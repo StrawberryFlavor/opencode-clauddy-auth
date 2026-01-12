@@ -1,0 +1,520 @@
+# OpenCode Clauddy Relay Auth Plugin - 安装指南
+
+**一次登录 → 多模型可用（GPT-5.2、Claude、Gemini）**
+
+本指南帮助你安装和配置 OpenCode 的 `opencode-clauddy-auth` 插件。
+
+---
+
+## 目录
+
+- [这是什么？](#这是什么)
+- [支持的模型](#支持的模型)
+- [安装](#安装)
+  - [人类用户](#人类用户)
+  - [LLM Agent](#llm-agent)
+- [使用方法](#使用方法)
+- [配置选项](#配置选项)
+- [与 oh-my-opencode 集成](#与-oh-my-opencode-集成)
+- [故障排查](#故障排查)
+
+---
+
+## 这是什么？
+
+OpenCode 支持多种 AI 提供商。这个插件使用 **Clauddy 中转服务** 作为统一的认证层，让你可以:
+
+- 只维护 **一份** 配置
+- 只认证 **一次**
+- 在 OpenCode 中自由切换多个模型
+
+如果你需要同时使用 OpenAI / Anthropic / Google 的模型,这个插件能让配置变得简单可控。
+
+---
+
+## 支持的模型
+
+开箱即用,插件提供以下模型:
+
+| 模型 ID | 说明 |
+|---------|------|
+| `clauddy/gpt-5.2-codex` | GPT-5.2 代码优化版 |
+| `clauddy/gpt-5.2` | 最新 GPT-5.2 |
+| `clauddy/claude-sonnet-4-5-20250929` | Claude Sonnet 4.5 |
+| `clauddy/claude-opus-4-5-20251101` | Claude Opus 4.5 |
+| `clauddy/gemini-3-pro` | Gemini 3 Pro |
+
+> 默认中转地址：`https://claudecode.dpdns.org/api`（也可用 `ANTHROPIC_BASE_URL` 覆盖）
+
+---
+
+## 安装
+
+### 人类用户
+
+**让 AI 帮你装（推荐）**
+
+打开你的 AI 编程助手（OpenCode / Claude Code / Cursor 等），粘贴这句话:
+
+```
+帮我安装配置 opencode-clauddy-auth，按照这个说明操作: https://raw.githubusercontent.com/clauddy/opencode-clauddy-auth/main/README.ai.md
+```
+
+AI 会引导你完成整个安装流程。
+
+---
+
+<details>
+<summary><strong>手动安装</strong></summary>
+
+#### 第一步: 准备 API Key
+
+准备好你的 API key（也可以直接设置为环境变量 `ANTHROPIC_AUTH_TOKEN`）。
+
+#### 第二步: 添加插件
+
+编辑 OpenCode 配置文件 (`~/.config/opencode/opencode.json`):
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["opencode-clauddy-auth"]
+}
+```
+
+#### 第三步: 重启 OpenCode
+
+关闭并重新打开 OpenCode 以加载插件。
+
+#### 第四步: 配置认证
+
+**方法一: 使用 auth.json（推荐用于自动化）**
+
+编辑 `~/.local/share/opencode/auth.json`:
+
+```json
+{
+  "clauddy": {
+    "type": "api",
+    "key": "你的_API_KEY"
+  }
+}
+```
+
+**方法二: 交互式登录**
+
+在终端运行:
+
+```bash
+opencode auth login
+```
+
+按提示操作:
+1. 选择 **Other**
+2. 供应商名称: `clauddy`
+3. 输入你的 API key
+4. 回车完成
+
+![认证流程](assets/auth-login.png)
+
+</details>
+
+---
+
+### LLM Agent
+
+<details>
+<summary>Instructions for LLM Agents (click to expand)</summary>
+
+If you're an LLM Agent helping set up opencode-clauddy-auth, follow these steps:
+
+### Step 0: Ask user for API key
+
+Ask the user:
+
+> **"Do you have a Clauddy API key?"**
+>
+> - If yes, please provide it
+> - If no, please obtain a key from your relay service
+>
+> Please let me know and I'll continue with the setup.
+
+**Rules:**
+- DO NOT proceed until the user provides a valid API key
+- DO NOT fabricate or guess a key
+- Wait for the user to respond
+
+### Step 1: Check OpenCode installation
+
+```bash
+which opencode || command -v opencode
+```
+
+If OpenCode is NOT installed:
+
+**Recommended (one-line install):**
+```bash
+curl -fsSL https://opencode.ai/install | bash
+```
+
+**Alternative methods:**
+
+**npm:**
+```bash
+npm i -g opencode-ai
+```
+
+**bun:**
+```bash
+bun add -g opencode-ai
+```
+
+**Homebrew (official tap):**
+```bash
+brew install anomalyco/tap/opencode
+```
+
+**Arch Linux (AUR):**
+```bash
+paru -S opencode
+```
+
+Verify:
+```bash
+opencode --version
+```
+
+### Step 2: Configure authentication
+
+**Target path:**
+- Linux/macOS: `~/.local/share/opencode/auth.json`
+
+**2.1 Ensure directory exists**
+
+```bash
+mkdir -p ~/.local/share/opencode
+```
+
+**2.2 Read existing auth.json**
+
+If `auth.json` exists:
+- Read and parse it as JSON
+- Preserve all existing providers
+- Only modify the `clauddy` entry
+
+If it does NOT exist:
+- Start from empty JSON object `{}`
+
+**2.3 Write Clauddy entry**
+
+Add or update the `clauddy` entry:
+
+```json
+{
+  "clauddy": {
+    "type": "api",
+    "key": "<USER_PROVIDED_API_KEY>"
+  }
+}
+```
+
+**Merge rules:**
+- If `clauddy` exists → overwrite its `key` field only
+- If `clauddy` does not exist → add the entire entry
+- **NEVER delete or modify other providers**
+
+### Step 3: Configure OpenCode plugin
+
+**Target path:**
+- Global config: `~/.config/opencode/opencode.json`
+
+**3.1 Ensure config directory exists**
+
+```bash
+mkdir -p ~/.config/opencode
+```
+
+**3.2 Read existing opencode.json**
+
+If `opencode.json` exists:
+- Read and parse it as JSON
+- Preserve all existing configuration
+
+If it does NOT exist:
+- Start with base structure:
+```json
+{
+  "$schema": "https://opencode.ai/config.json"
+}
+```
+
+**3.3 Add plugin to configuration**
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["opencode-clauddy-auth"]
+}
+```
+
+**Merge rules:**
+- If `plugin` array exists → append `"opencode-clauddy-auth"` if not present
+- If `plugin` does not exist → create array with `["opencode-clauddy-auth"]`
+- **NEVER remove existing plugins**
+
+### Step 4: Verify installation
+
+**4.1 Check npm registry**
+
+```bash
+npm config get registry
+```
+
+If not `https://registry.npmjs.org/`, include a warning in the final message.
+
+**4.2 Tell the user**
+
+If using official registry:
+> "Installation complete! Please restart OpenCode to load the plugin.
+> You can now use any of these models:
+> - `clauddy/gpt-5.2-codex`
+> - `clauddy/gpt-5.2`
+> - `clauddy/claude-sonnet-4-5-20250929`
+> - `clauddy/claude-opus-4-5-20251101`
+> - `clauddy/gemini-3-pro`
+>
+> To test, run: `opencode --model clauddy/gpt-5.2-codex`"
+
+If using mirror registry, add warning:
+> "⚠️ **Note**: You're using a non-official npm registry. If OpenCode fails to load the plugin (e.g., `BunInstallFailedError`), it may be due to mirror sync delays. Fix: temporarily switch to official registry with `npm config set registry https://registry.npmjs.org/`, restart OpenCode, then switch back if needed."
+
+### Summary of changes
+
+| File | Description |
+|------|-------------|
+| `~/.local/share/opencode/auth.json` | Stores Clauddy API key |
+| `~/.config/opencode/opencode.json` | Registers the plugin |
+
+### Important rules for AI agents
+
+1. **NEVER skip Step 0** — Always ask for API key first
+2. **NEVER fabricate API keys** — Only use what user provides
+3. **NEVER delete existing config** — Always merge, never overwrite
+4. **ALWAYS verify file writes** — Re-read after writing to confirm valid JSON
+5. **ALWAYS wait for user confirmation** — Don't assume, ask when unclear
+6. **ALWAYS check npm registry and warn if using mirrors** — Run `npm config get registry` and warn about potential sync issues
+
+</details>
+
+---
+
+## 使用方法
+
+启动 OpenCode 并指定模型:
+
+```bash
+opencode --model clauddy/gpt-5.2-codex
+```
+
+> 说明：OpenCode 的 `--model` 格式是 `provider/model`，这里 `clauddy` 是 provider，`gpt-5.2-codex` 才是模型 ID。
+
+或者在 OpenCode 界面中切换模型。
+
+---
+
+## 配置选项
+
+### Provider 配置
+
+插件会自动在你的 OpenCode 配置中注入 `clauddy` provider。
+
+如果你想手动管理，可以在 `~/.config/opencode/opencode.json` 中使用这个模板:
+
+```json
+{
+    "provider": {
+    "clauddy": {
+      "name": "Clauddy",
+      "api": "https://api.openai.com/v1",
+      "env": ["ANTHROPIC_AUTH_TOKEN", "CLAUDDY_API_KEY"],
+      "models": {
+        "gpt-5.2-codex": {},
+        "gpt-5.2": {},
+        "claude-sonnet-4-5-20250929": {},
+        "claude-opus-4-5-20251101": {},
+        "gemini-3-pro": {}
+      }
+    }
+  }
+}
+```
+
+### 使用你们的中转服务（可选）
+
+如果你的中转服务使用 Claude Code 风格环境变量，可以这样配置：
+
+```bash
+echo 'export ANTHROPIC_BASE_URL="https://claudecode.dpdns.org/api"' >> ~/.zshrc
+echo 'export ANTHROPIC_AUTH_TOKEN="你的API密钥"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+### 模型选择
+
+可以在 `opencode.json` 中设置默认模型:
+
+```json
+{
+  "model": "clauddy/gpt-5.2-codex"
+}
+```
+
+或使用环境变量:
+
+```bash
+export OPENCODE_MODEL=clauddy/gpt-5.2-codex
+```
+
+---
+
+## 与 oh-my-opencode 集成
+
+如果你使用 [oh-my-opencode](https://github.com/code-yeongyu/oh-my-opencode),可以配置其 agent 使用 `clauddy/` 的模型。
+
+### 安装 oh-my-opencode
+
+```bash
+bunx oh-my-opencode install --no-tui --claude=no --chatgpt=no --gemini=no
+```
+
+### 配置 oh-my-opencode 使用 Clauddy 模型
+
+编辑 `~/.config/opencode/oh-my-opencode.json`:
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "agents": {
+    "Sisyphus": {
+      "model": "clauddy/claude-opus-4-5-20251101"
+    },
+    "oracle": {
+      "model": "clauddy/gpt-5.2"
+    },
+    "librarian": {
+      "model": "clauddy/claude-sonnet-4-5-20250929"
+    },
+    "explore": {
+      "model": "clauddy/gemini-3-pro"
+    },
+    "frontend-ui-ux-engineer": {
+      "model": "clauddy/gemini-3-pro"
+    },
+    "document-writer": {
+      "model": "clauddy/gemini-3-pro"
+    },
+    "multimodal-looker": {
+      "model": "clauddy/gemini-3-pro"
+    }
+  }
+}
+```
+
+这样配置后:
+- **Sisyphus** (主编排 agent) 使用 Claude Opus 4.5
+- **oracle** (架构、代码审查) 使用 GPT-5.2
+- **librarian** (文档查询) 使用 Claude Sonnet 4.5
+- **explore** (快速代码探索) 使用 Gemini 3 Pro
+- **frontend-ui-ux-engineer** (前端 UI) 使用 Gemini 3 Pro
+- **document-writer** (技术文档) 使用 Gemini 3 Pro
+- **multimodal-looker** (视觉内容分析) 使用 Gemini 3 Pro
+
+### 完整配置示例
+
+在 `~/.config/opencode/opencode.json` 中:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "opencode-clauddy-auth",
+    "oh-my-opencode"
+  ],
+  "model": "clauddy/claude-opus-4-5-20251101"
+}
+```
+
+---
+
+## 故障排查
+
+### "BunInstallFailedError" 或插件加载失败
+
+这通常是因为 npm 镜像源尚未同步最新版本。告诉用户：
+
+> "这个问题通常是因为你的 npm 镜像源还没有同步最新版本。解决方法：
+> ```bash
+> # 临时切换到官方源
+> npm config set registry https://registry.npmjs.org/
+> # 重启 OpenCode
+> # 之后可以改回原来的源
+> ```"
+
+### "Provider not found: clauddy"
+
+- 确认 `opencode.json` 中有 `"plugin": ["opencode-clauddy-auth"]`
+- 修改配置后记得重启 OpenCode
+
+### "Authentication failed"
+
+- 确认 `auth.json` 中的 key 格式正确
+- 如果未配置 `clauddy` 的 auth key，可改用环境变量 `ANTHROPIC_AUTH_TOKEN`
+
+### "Model not found"
+
+- 插件会在首次加载时自动注入模型
+- 重启 OpenCode 后重试
+- 检查模型名称是否包含 `clauddy/` 前缀
+
+### 速率限制或配额错误
+
+- 检查你的中转服务账户额度/限额
+
+---
+
+## 卸载
+
+如需移除插件:
+
+1. **从 OpenCode 配置中移除**
+
+   编辑 `~/.config/opencode/opencode.json`，从 `plugin` 数组中删除 `"opencode-clauddy-auth"`。
+
+2. **移除认证信息（可选）**
+
+   ```bash
+   # 从 auth.json 中移除 Clauddy 条目
+   # 编辑 ~/.local/share/opencode/auth.json，删除 "clauddy" 部分
+   ```
+
+3. **验证移除**
+
+   ```bash
+   opencode --version
+   # 插件应该不再被加载
+   ```
+
+---
+
+## 许可证
+
+MIT
+
+---
+
+## 相关链接
+
+- GitHub: https://github.com/clauddy/opencode-clauddy-auth
+- NPM: https://www.npmjs.com/package/opencode-clauddy-auth
+- Relay Base URL: https://claudecode.dpdns.org/api
+- oh-my-opencode: https://github.com/code-yeongyu/oh-my-opencode

@@ -1,0 +1,65 @@
+{
+  "name": "opencode-clauddy-auth",
+  "version": "0.1.18",
+  "description": "OpenCode plugin for Clauddy relay authentication - Access GPT-5.2, Claude, and Gemini models through a relay API",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./provider": {
+      "types": "./dist/provider.d.ts",
+      "import": "./dist/provider.js"
+    }
+  },
+  "files": [
+    "dist",
+    "scripts"
+  ],
+  "scripts": {
+    "build": "bun build index.ts provider.ts --outdir dist --target bun --format esm --external @ai-sdk/anthropic --external @ai-sdk/google --external @ai-sdk/openai --external @ai-sdk/provider --external @ai-sdk/provider-utils --external @opencode-ai/plugin --external @opencode-ai/sdk && tsc --emitDeclarationOnly",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "bun run clean && bun run build",
+    "typecheck": "tsc --noEmit",
+    "postinstall": "node ./scripts/install-opencode-clauddy.js"
+  },
+  "keywords": [
+    "opencode",
+    "plugin",
+    "clauddy",
+    "relay",
+    "gpt-5",
+    "claude",
+    "gemini",
+    "ai",
+    "llm",
+    "authentication"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clauddy/opencode-clauddy-auth.git"
+  },
+  "bugs": {
+    "url": "https://github.com/clauddy/opencode-clauddy-auth/issues"
+  },
+  "homepage": "https://github.com/clauddy/opencode-clauddy-auth#readme",
+  "dependencies": {
+    "@ai-sdk/anthropic": "2.0.56",
+    "@ai-sdk/google": "2.0.49",
+    "@ai-sdk/openai": "2.0.71",
+    "@ai-sdk/provider": "2.0.0",
+    "@ai-sdk/provider-utils": "3.0.19"
+  },
+  "peerDependencies": {
+    "@opencode-ai/plugin": "^1.0.150"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0"
+  }
+}

@@ -57,7 +57,7 @@ OpenCode 支持多种 AI 提供商。这个插件使用 **Clauddy 中转服务**
 打开你的 AI 编程助手（OpenCode / Claude Code / Cursor 等），粘贴这句话:
 
 ```
-帮我安装配置 opencode-clauddy-auth，按照这个说明操作: https://raw.githubusercontent.com/clauddy/opencode-clauddy-auth/main/README.ai.md
+帮我安装配置 opencode-clauddy-auth，按照这个说明操作: https://raw.githubusercontent.com/StrawberryFlavor/opencode-clauddy-auth/main/README.ai.md
 ```
 
 AI 会引导你完成整个安装流程。
@@ -514,7 +514,7 @@ MIT
 
 ## 相关链接
 
-- GitHub: https://github.com/clauddy/opencode-clauddy-auth
+- GitHub: https://github.com/StrawberryFlavor/opencode-clauddy-auth
 - NPM: https://www.npmjs.com/package/opencode-clauddy-auth
 - Relay Base URL: https://claudecode.dpdns.org/api
 - oh-my-opencode: https://github.com/code-yeongyu/oh-my-opencode

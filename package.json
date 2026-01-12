@@ -42,12 +42,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/clauddy/opencode-clauddy-auth.git"
+    "url": "git+https://github.com/StrawberryFlavor/opencode-clauddy-auth.git"
   },
   "bugs": {
-    "url": "https://github.com/clauddy/opencode-clauddy-auth/issues"
+    "url": "https://github.com/StrawberryFlavor/opencode-clauddy-auth/issues"
   },
-  "homepage": "https://github.com/clauddy/opencode-clauddy-auth#readme",
+  "homepage": "https://github.com/StrawberryFlavor/opencode-clauddy-auth#readme",
   "dependencies": {
     "@ai-sdk/anthropic": "2.0.56",
     "@ai-sdk/google": "2.0.49",

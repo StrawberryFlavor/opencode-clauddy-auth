@@ -74,13 +74,13 @@ User Request → OpenCode → Plugin Auth Hook → Route by Model:
 ### 🔥 方案一：完整安装（推荐 - 包含 oh-my-opencode）
 
 ```
-帮我安装配置 opencode-clauddy-auth 和 oh-my-opencode，按照这个说明操作：https://raw.githubusercontent.com/clauddy/opencode-clauddy-auth/main/INSTALL-WITH-OMO.md
+帮我安装配置 opencode-clauddy-auth 和 oh-my-opencode，按照这个说明操作：https://raw.githubusercontent.com/StrawberryFlavor/opencode-clauddy-auth/main/INSTALL-WITH-OMO.md
 ```
 
 ### 📦 方案二：单独安装
 
 ```
-帮我安装配置 opencode-clauddy-auth，按照这个说明操作：https://raw.githubusercontent.com/clauddy/opencode-clauddy-auth/main/README.ai.md
+帮我安装配置 opencode-clauddy-auth，按照这个说明操作：https://raw.githubusercontent.com/StrawberryFlavor/opencode-clauddy-auth/main/README.ai.md
 ```
 
 <details>
@@ -129,7 +129,7 @@ source ~/.zshrc
 ## 开发
 
 ```bash
-git clone https://github.com/clauddy/opencode-clauddy-auth.git
+git clone https://github.com/StrawberryFlavor/opencode-clauddy-auth.git
 cd opencode-clauddy-auth
 bun install
 bun run build

@@ -5,7 +5,7 @@
 复制下面这句话，发给你的 AI 编程助手（OpenCode / Claude Code / Cursor 等）：
 
 ```
-帮我安装配置 opencode-clauddy-auth 和 oh-my-opencode，按照这个说明操作：https://raw.githubusercontent.com/clauddy/opencode-clauddy-auth/main/INSTALL-WITH-OMO.md
+帮我安装配置 opencode-clauddy-auth 和 oh-my-opencode，按照这个说明操作：https://raw.githubusercontent.com/StrawberryFlavor/opencode-clauddy-auth/main/INSTALL-WITH-OMO.md
 ```
 
 ## ✨ 安装后你将获得
@@ -56,7 +56,7 @@ opencode --model clauddy/claude-opus-4-5
 
 ## 📚 相关链接
 
-- **opencode-clauddy-auth**: https://github.com/clauddy/opencode-clauddy-auth
+- **opencode-clauddy-auth**: https://github.com/StrawberryFlavor/opencode-clauddy-auth
 - **oh-my-opencode**: https://github.com/code-yeongyu/oh-my-opencode
 - **Relay Base URL**: https://claudecode.dpdns.org/api
 - **OpenCode**: https://opencode.ai/
